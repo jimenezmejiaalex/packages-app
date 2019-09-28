@@ -1,0 +1,118 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+            <ion-back-button text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title>Informacion de Paquete</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div>
+        <ion-list-header>
+            <b>Codigo: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.id_paquete}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Nombre de afiliado: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.nombre_de_afiliado}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Codigo de afiliado: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.codigo_de_afiliado}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Teléfono: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-icon name="home"></ion-icon>
+            <ion-label>+506 {{package.telefono}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Celular: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-icon name="call"></ion-icon>
+            <ion-label>+506 {{package.celular}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Dirección: </b>
+        </ion-list-header>
+        <ion-item>
+            <p>{{package.direccion}}</p>
+        </ion-item>
+        <ion-list-header>
+            <b>Población: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.poblacion}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Peso: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.peso}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Estado: </b>
+        </ion-list-header>
+        <ion-item>
+            <ion-label>{{package.estado}}</ion-label>
+        </ion-item>
+        <ion-list-header>
+            <b>Detalles: </b>
+        </ion-list-header>
+        <ion-item>
+            <p>
+                {{package.detalles}}
+            </p>
+        </ion-item>
+        <ion-item-divider>
+            <ion-label>Cambiar Estado</ion-label>
+        </ion-item-divider>
+        <ion-list>
+
+            <ion-radio-group name="{{package.estado.toLowerCase()}}" [(ngModel)]="status">
+                <ion-item *ngFor="let item of estados">
+                    <ion-label>{{ item }}</ion-label>
+                    <ion-radio value="{{ item.toLowerCase() }}" (ionSelect)="radioChecked(item)"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+
+        </ion-list>
+    </div>
+    <div *ngIf="isDelivered">
+        <ion-list>
+            <ion-radio-group name="receiver" [(ngModel)]="receiver" allowEmptySelection="false">
+                <ion-list-header>Persona que rececibe</ion-list-header>
+                <ion-item *ngFor="let item of receivers">
+                    <ion-label>{{ item }}</ion-label>
+                    <ion-radio value="{{ item.toLowerCase() }}" (ionSelect)="radioCheckedOther(item)"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+        </ion-list>
+
+        <div *ngIf="isOther">
+            <ion-list-header>
+                Otro (Especifique)
+                <ion-text color="danger">*</ion-text>
+            </ion-list-header>
+            <ion-input type="text" placeholder="Especifique" [(ngModel)]="other" required></ion-input>
+        </div>
+    </div>
+    <ion-list-header>Descripción
+        <ion-text color="danger">*</ion-text>
+    </ion-list-header>
+    <ion-textarea [(ngModel)]="description" placeholder="Descripción de la entrega" required></ion-textarea>
+
+    <ion-button (click)="submitInfo()" expand="block">
+        Guardar
+    </ion-button>
+</ion-content>

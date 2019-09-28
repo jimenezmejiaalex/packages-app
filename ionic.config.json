@@ -1,5 +1,7 @@
 {
   "name": "CyC-Multiservicios-CR-app-v1",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

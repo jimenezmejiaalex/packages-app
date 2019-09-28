@@ -1,0 +1,27 @@
+<ion-header translucent>
+
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{titleText}}</ion-title>
+    </ion-toolbar>
+    <ion-toolbar>
+        <ion-searchbar placeholder="Buscar" (ionChange)="search($event)" animated></ion-searchbar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <ion-item *ngFor="let package of (packages | filtro:searchText)" (click)="gotoPackageInfo(package)">
+            <ion-avatar slot="start">
+                <ion-icon name="cube"></ion-icon>
+            </ion-avatar>
+            <ion-label>
+                <h5><b>{{package.id_paquete}}</b></h5>
+                <h3>{{package.nombre_de_afiliado}}</h3>
+                <p><b>Estado: </b>{{package.estado}}</p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>
