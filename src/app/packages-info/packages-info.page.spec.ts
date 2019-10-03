@@ -1,7 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PackagesInfoPage } from './packages-info.page';
+import {PackagesInfoPage} from './packages-info.page';
 
 describe('PackagesInfoPage', () => {
   let component: PackagesInfoPage;
@@ -9,10 +9,10 @@ describe('PackagesInfoPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PackagesInfoPage ],
+      declarations: [PackagesInfoPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

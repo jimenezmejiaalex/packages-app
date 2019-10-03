@@ -1,7 +1,8 @@
-import { IPackage } from './Package';
+import {IPackage} from './Package';
 
-export interface IPackageDelivered{
-    package: IPackage,
-    receiver: string,
-    description: string,
+export interface IPackageDelivered {
+  package: IPackage;
+  receiver: string;
+  specify: string;
+  description: string;
 }

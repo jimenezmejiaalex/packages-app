@@ -1,7 +1,6 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
             <ion-back-button text=""></ion-back-button>
         </ion-buttons>
         <ion-title>Informacion de Paquete</ion-title>
@@ -9,6 +8,7 @@
 </ion-header>
 
 <ion-content>
+
     <div>
         <ion-list-header>
             <b>Codigo: </b>
@@ -74,12 +74,12 @@
                 {{package.detalles}}
             </p>
         </ion-item>
-        <ion-item-divider>
-            <ion-label>Cambiar Estado</ion-label>
+        <ion-item-divider color="secondary shade">
+            <ion-label >Cambiar Estado</ion-label>
         </ion-item-divider>
         <ion-list>
 
-            <ion-radio-group name="{{package.estado.toLowerCase()}}" [(ngModel)]="status">
+            <ion-radio-group name="{{package.estado.toLowerCase()}}" value=" {{ status }} ">
                 <ion-item *ngFor="let item of estados">
                     <ion-label>{{ item }}</ion-label>
                     <ion-radio value="{{ item.toLowerCase() }}" (ionSelect)="radioChecked(item)"></ion-radio>
@@ -90,8 +90,8 @@
     </div>
     <div *ngIf="isDelivered">
         <ion-list>
-            <ion-radio-group name="receiver" [(ngModel)]="receiver" allowEmptySelection="false">
-                <ion-list-header>Persona que rececibe</ion-list-header>
+            <ion-radio-group name="receiver" allowEmptySelection="false">
+                <ion-list-header color="tertiary">Persona que recibe</ion-list-header>
                 <ion-item *ngFor="let item of receivers">
                     <ion-label>{{ item }}</ion-label>
                     <ion-radio value="{{ item.toLowerCase() }}" (ionSelect)="radioCheckedOther(item)"></ion-radio>
@@ -100,19 +100,22 @@
         </ion-list>
 
         <div *ngIf="isOther">
-            <ion-list-header>
+            <ion-list-header color="tertiary">
                 Otro (Especifique)
                 <ion-text color="danger">*</ion-text>
             </ion-list-header>
-            <ion-input type="text" placeholder="Especifique" [(ngModel)]="other" required></ion-input>
+            <ion-input type="text" placeholder="Especifique" (ionChange)="otherInputChanged($event.target.value)" [(ngModel)]="other"></ion-input>
         </div>
     </div>
     <ion-list-header>Descripción
         <ion-text color="danger">*</ion-text>
     </ion-list-header>
-    <ion-textarea [(ngModel)]="description" placeholder="Descripción de la entrega" required></ion-textarea>
-
-    <ion-button (click)="submitInfo()" expand="block">
-        Guardar
-    </ion-button>
+    <ion-textarea placeholder="Descripción de la entrega" (ionChange)="textAreaChanged($event.target.value)" [(ngModel)]="description"></ion-textarea>
 </ion-content>
+<ion-footer>
+    <ion-toolbar>
+        <ion-button (click)="submitInfo()" expand="block" disabled="{{ isSubmittable }}" size="large">
+            Guardar
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>
