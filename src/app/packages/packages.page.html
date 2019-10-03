@@ -1,10 +1,13 @@
 <ion-header translucent>
 
     <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-        </ion-buttons>
         <ion-title>{{titleText}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="danger" expand="block" *ngIf=" packages.length > 0 ">
+                <ion-icon name="cloud-upload"></ion-icon>
+                {{ pendingToUploadSize() }}
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
     <ion-toolbar>
         <ion-searchbar placeholder="Buscar" (ionChange)="search($event)" animated></ion-searchbar>
@@ -13,15 +16,29 @@
 
 <ion-content>
     <ion-list>
-        <ion-item *ngFor="let package of (packages | filtro:searchText)" (click)="gotoPackageInfo(package)">
+        <ion-item *ngFor="let pck of (packages | filtro:searchText)" (click)="gotoPackageInfo(pck)">
             <ion-avatar slot="start">
                 <ion-icon name="cube"></ion-icon>
             </ion-avatar>
             <ion-label>
-                <h5><b>{{package.id_paquete}}</b></h5>
-                <h3>{{package.nombre_de_afiliado}}</h3>
-                <p><b>Estado: </b>{{package.estado}}</p>
+                <h5><b>{{pck.id_paquete}}</b></h5>
+                <h3>{{pck.nombre_de_afiliado}}</h3>
+                <p><b>Estado: </b>{{pck.estado}}</p>
             </ion-label>
         </ion-item>
     </ion-list>
 </ion-content>
+<ion-footer>
+    <ion-toolbar>
+        <div *ngIf=" packages.length <= 0 ">
+            <ion-button (click)="gotoPackagesList()" expand="block" size="large" color="primary">
+                {{ startText }}
+            </ion-button>
+        </div>
+        <div *ngIf=" packages.length > 0 ">
+            <ion-button (click)="endMyDay()" expand="block" size="large" color="success">
+                {{ endText }}
+            </ion-button>
+        </div>
+    </ion-toolbar>
+</ion-footer>

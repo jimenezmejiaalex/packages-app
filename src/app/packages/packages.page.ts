@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { PackagesService } from './api/packages.service';
-import { IPackage } from './interfaces/Package';
-import { LoadingController } from '@ionic/angular';
-import { Router, NavigationExtras } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {PackagesService} from './api/packages.service';
+import {IPackage} from './interfaces/Package';
+import {LoadingController} from '@ionic/angular';
+import {NavigationExtras, Router} from '@angular/router';
+import {Dialogs} from '@ionic-native/dialogs/ngx';
 
 @Component({
   selector: 'app-packages',
@@ -12,61 +13,77 @@ import { Router, NavigationExtras } from '@angular/router';
 export class PackagesPage implements OnInit {
 
   packages: Array<IPackage> = [];
-  loadedPackages: Array<IPackage> = [];
-  searchText: string = '';
-  titleText:string = 'Listado de Reparto';
-  constructor(private pckgS: PackagesService, public loadingController: LoadingController, private router: Router) {
-    this.getAPIPackages()
+  searchText = '';
+  titleText = 'Listado de Reparto';
+  startText = 'Empezar';
+  endText = 'Finalizar';
+  constructor(
+    private pckgS: PackagesService,
+    public loadingController: LoadingController,
+    private router: Router,
+    public dialog: Dialogs
+  ) {}
+
+  pendingToUploadSize(): number {
+    return this.pckgS.getPackagesEditedSize();
   }
 
-  gotoPackageInfo(p: IPackage){
-    console.log(p);
-    let navigationExtras: NavigationExtras = {
-      state: {
-        pckg: p,
-      }
+  async gotoPackageInfo(p: IPackage) {
+    const pack = await this.pckgS.existEdited(p.id_paquete);
+    let obj = {};
+    if (!pack) {
+      // this.dialog.alert(JSON.stringify(pack));
+      obj = {
+        pckg: {
+          package: p,
+          receiver: '',
+          specify: '',
+          description: '',
+        }
+      };
+    } else {
+      obj = {pckg: pack};
+      // this.dialog.alert(JSON.stringify(p));
     }
-    this.router.navigate(['package-info'], navigationExtras);
+    const navigationExtras: NavigationExtras = {
+      state: obj,
+    };
+    await this.router.navigate(['package-info'], navigationExtras);
+  }
+
+  async checkData() {
+    if (await this.pckgS.existData()) {
+      await this.pckgS.continueMyday();
+      this.getAPIPackages();
+    }
   }
 
   async getAPIPackages() {
     const loading = await this.loadingController.create();
     await loading.present();
-
-    await this.pckgS.getPackages().subscribe((data) => {
-      this.packages = data['nodes'].map(e => {
-        return this.getPackageObj(e['node'])
-      });
-      this.loadedPackages = this.packages;
-      loading.dismiss();
-    });
-    //this.packages = await this.pckgS.getPackages()['nodes'].map(e => {
-      //return this.getPackageObj(e['node'])
-    //});
-    //this.loadedPackages = this.packages;
-    //loading.dismiss();
+    this.packages = await this.pckgS.getPackages();
+    await loading.dismiss();
   }
 
-  search(event){
-   this.searchText = event.detail.value;
+  search(event) {
+    this.searchText = event.detail.value;
   }
 
-  getPackageObj(obj){
-    return {
-      id_paquete:         obj['ID Paquete'],
-      peso:               obj['Peso'],
-      estado:             obj['Estado'],
-      direccion:          obj['Dirección'],
-      poblacion:          obj['Población'],
-      nombre_de_afiliado: obj['Nombre de afiliado'],
-      codigo_de_afiliado: obj['Código de afiliado'],
-      telefono:           obj['Teléfono'],
-      celular:            obj['Celular'],
-      detalles:           obj['Detalles'],
-    }
+  async endMyDay() {
+    await this.pckgS.dataEndDay();
+    this.getAPIPackages();
   }
 
-  ngOnInit() {
+  async gotoPackagesList() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+    await this.pckgS.dataStartDay();
+    this.getAPIPackages();
+    await loading.dismiss();
+  }
+
+  async ngOnInit() {
+    await this.checkData();
   }
 
 
