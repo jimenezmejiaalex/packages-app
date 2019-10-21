@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {IPackage} from '../packages/interfaces/Package';
+import {IPackage} from '../interfaces/Package';
 
 @Pipe({
   name: 'filtro'

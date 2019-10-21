@@ -29,18 +29,13 @@
             <ion-label>{{package.codigo_de_afiliado}}</ion-label>
         </ion-item>
         <ion-list-header>
-            <b>Teléfono: </b>
+            <b>Teléfonos: </b>
         </ion-list-header>
         <ion-item>
             <ion-icon name="home"></ion-icon>
             <ion-label>+506 {{package.telefono}}</ion-label>
-        </ion-item>
-        <ion-list-header>
-            <b>Celular: </b>
-        </ion-list-header>
-        <ion-item>
-            <ion-icon name="call"></ion-icon>
-            <ion-label>+506 {{package.celular}}</ion-label>
+          <ion-icon name="call"></ion-icon>
+          <ion-label>+506 {{package.celular}}</ion-label>
         </ion-item>
         <ion-list-header>
             <b>Dirección: </b>
@@ -107,8 +102,8 @@
             <ion-input type="text" placeholder="Especifique" (ionChange)="otherInputChanged($event.target.value)" [(ngModel)]="other"></ion-input>
         </div>
     </div>
-    <ion-list-header>Descripción
-        <ion-text color="danger">*</ion-text>
+    <ion-list-header>
+      Descripción
     </ion-list-header>
     <ion-textarea placeholder="Descripción de la entrega" (ionChange)="textAreaChanged($event.target.value)" [(ngModel)]="description"></ion-textarea>
 </ion-content>

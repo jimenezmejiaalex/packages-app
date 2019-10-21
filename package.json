@@ -20,8 +20,14 @@
         "@angular/platform-browser": "~8.2.8",
         "@angular/platform-browser-dynamic": "~8.2.8",
         "@angular/router": "~8.2.8",
+        "@ionic-native/android-permissions": "^5.15.0",
         "@ionic-native/core": "^5.14.0",
+        "@ionic-native/device": "^5.15.0",
+        "@ionic-native/diagnostic": "^5.15.0",
         "@ionic-native/dialogs": "^5.14.0",
+        "@ionic-native/geolocation": "^5.15.0",
+        "@ionic-native/location-accuracy": "^5.15.0",
+        "@ionic-native/native-geocoder": "^5.15.0",
         "@ionic-native/network": "^5.14.0",
         "@ionic-native/network-interface": "^5.14.0",
         "@ionic-native/splash-screen": "^5.14.0",
@@ -29,11 +35,16 @@
         "@ionic/angular": "^4.10.0",
         "@ionic/storage": "^2.2.0",
         "cordova-android": "8.1.0",
-        "cordova-ios": "5.0.1",
+        "cordova-plugin-add-swift-support": "^2.0.2",
+        "cordova-plugin-android-permissions": "^1.0.2",
         "cordova-plugin-dialogs": "^2.0.2",
+        "cordova-plugin-geolocation": "^4.0.2",
+        "cordova-plugin-nativegeocoder": "^3.2.2",
         "cordova-plugin-network-information": "^2.0.2",
         "cordova-plugin-networkinterface": "^2.0.0",
+        "cordova-plugin-request-location-accuracy": "^2.3.0",
         "cordova-sqlite-storage": "^3.4.0",
+        "cordova.plugins.diagnostic": "^5.0.1",
         "core-js": "^3.2.1",
         "rxjs": "~6.5.3",
         "tslib": "^1.10.0",
@@ -78,15 +89,25 @@
             "cordova-plugin-statusbar": {},
             "cordova-plugin-device": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-ionic-webview": {},
+            "cordova-plugin-ionic-webview": {
+                "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+            },
             "cordova-plugin-ionic-keyboard": {},
             "cordova-sqlite-storage": {},
             "cordova-plugin-network-information": {},
             "cordova-plugin-networkinterface": {},
-            "cordova-plugin-dialogs": {}
+            "cordova-plugin-dialogs": {},
+            "cordova-plugin-geolocation": {},
+            "cordova-plugin-nativegeocoder": {
+                "LOCATION_WHEN_IN_USE_DESCRIPTION": "Use geocoder service"
+            },
+            "cordova-plugin-android-permissions": {},
+            "cordova-plugin-request-location-accuracy": {},
+            "cordova.plugins.diagnostic": {
+                "ANDROID_SUPPORT_VERSION": "28.+"
+            }
         },
         "platforms": [
-            "ios",
             "android"
         ]
     }

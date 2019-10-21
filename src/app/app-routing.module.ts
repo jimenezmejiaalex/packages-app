@@ -7,16 +7,9 @@ const routes: Routes = [
     redirectTo: 'packages',
     pathMatch: 'full'
   },
-  {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-  },
-  {
-    path: 'list',
-    loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
-  },
   {path: 'packages', loadChildren: './packages/packages.module#PackagesPageModule'},
-  {path: 'package-info', loadChildren: './packages-info/packages-info.module#PackagesInfoPageModule'}
+  {path: 'package-info', loadChildren: './packages-info/packages-info.module#PackagesInfoPageModule'},
+  { path: 'modal-login', loadChildren: './modal-login/modal-login.module#ModalLoginPageModule' }
 ];
 
 @NgModule({

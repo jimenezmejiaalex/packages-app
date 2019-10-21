@@ -7,6 +7,10 @@
                 <ion-icon name="cloud-upload"></ion-icon>
                 {{ pendingToUploadSize() }}
             </ion-button>
+          <ion-button *ngIf="logged" (click)="logout()">
+            <ion-icon name="log-out"></ion-icon>
+            Salir
+          </ion-button>
         </ion-buttons>
     </ion-toolbar>
     <ion-toolbar>

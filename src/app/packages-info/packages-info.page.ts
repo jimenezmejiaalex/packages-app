@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {IPackage} from '../packages/interfaces/Package';
-import {PackagesService} from '../packages/api/packages.service';
-import {IPackageDelivered} from '../packages/interfaces/IPackageDelivered';
+import {IPackage} from '../interfaces/Package';
+import {PackagesService} from '../services/api/packages.service';
+import {IPackageDelivered} from '../interfaces/IPackageDelivered';
 import {AlertController} from '@ionic/angular';
+import {loading} from '../../environments/environment.prod';
 
 
 @Component({
@@ -30,9 +31,6 @@ export class PackagesInfoPage implements OnInit {
 
   // Content for HTML
   estados: Array<string> = [
-    'Bodega',
-    'En ruta',
-    'Rural',
     'Entregado',
     'Rechazado',
     'Devolucion',
@@ -40,9 +38,6 @@ export class PackagesInfoPage implements OnInit {
   ];
 
   estadosToSend = {
-    bodega: 'Bodega',
-    'en ruta': 'En ruta',
-    rural: 'Rural',
     entregado: 'Entregado',
     rechazado: 'Rechazado',
     devolucion: 'Devolucion',
@@ -91,13 +86,13 @@ export class PackagesInfoPage implements OnInit {
   }
 
   changeIsSubmittableValue(): boolean {
-    if ((!this.isDelivered) && this.description.length > 0 && this.status.length > 0) {
+    if ((!this.isDelivered) && this.status.length > 0) {
       return false;
     } else {
-      if ((!this.isOther) && this.receiver.length > 0 && this.description.length > 0) {
+      if ((!this.isOther) && this.receiver.length > 0) {
         return false;
       } else {
-        if (this.other.length > 0 && this.description.length > 0) {
+        if (this.other.length > 0 ) {
           return false;
         }
       }
@@ -126,13 +121,25 @@ export class PackagesInfoPage implements OnInit {
     this.other = value;
     this.isSubmittable = this.changeIsSubmittableValue();
   }
+  // Show a loading widget
+  async loadingStart() {
+    const result = await loading.create();
+    await result.present();
+  }
+
+  // Stop the loading widget
+  async loadingStop() {
+    await loading.dismiss();
+  }
 
   async submitInfo() {
+    this.loadingStart();
     this.setPackage();
     const result = await this.dataService.submitPackageEdited(this.packageDelivered);
     if (result) {
       await this.router.navigate(['packages']);
     }
+    this.loadingStop();
   }
 
   setPackage() {
