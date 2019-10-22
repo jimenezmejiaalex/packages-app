@@ -21,6 +21,7 @@ export class PackagesPage implements OnInit {
   startText = 'Empezar';
   endText = 'Finalizar';
   logged: boolean;
+
   constructor(
     private pckgS: PackagesService,
     private router: Router,
@@ -28,7 +29,8 @@ export class PackagesPage implements OnInit {
     private userService: UserService,
     private modalController: ModalController,
     private util: UtilService
-  ) {}
+  ) {
+  }
 
   pendingToUploadSize(): number {
     return this.pckgS.getPackagesEditedSize();
@@ -49,7 +51,7 @@ export class PackagesPage implements OnInit {
     } else {
       obj = {pckg: pack};
     }
-    const navigationExtras: NavigationExtras = { state: obj };
+    const navigationExtras: NavigationExtras = {state: obj};
     await this.router.navigate(['package-info'], navigationExtras);
   }
 
@@ -85,8 +87,8 @@ export class PackagesPage implements OnInit {
 
   async logIn(): Promise<boolean> {
     let data: any = await this.userService.getUser();
-    if ( !data ) {
-      data  = await this.presentModal();
+    if (!data) {
+      data = await this.presentModal();
       if (!data) {
         return false;
       }
@@ -105,19 +107,21 @@ export class PackagesPage implements OnInit {
       && await this.userService.removeUserInfo()
     ) {
       this.logged = !this.logged;
-      while (!await this.logIn()) {}
+      while (!await this.logIn()) {
+      }
     }
   }
 
   async presentModal() {
-    const modal = await this.modalController.create({ component: ModalLoginPage });
+    const modal = await this.modalController.create({component: ModalLoginPage});
     await modal.present();
-    const { data } = await modal.onWillDismiss();
+    const {data} = await modal.onWillDismiss();
     return data;
   }
 
   async ngOnInit() {
-    while (!await this.logIn()) {}
+    while (!await this.logIn()) {
+    }
     await this.checkData();
   }
 }

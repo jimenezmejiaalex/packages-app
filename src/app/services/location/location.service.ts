@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Geolocation, Geoposition} from '@ionic-native/geolocation/ngx';
 import {NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
 import {ILocation} from '../../interfaces/ILocation';
@@ -35,17 +35,18 @@ export class LocationService {
     };
     this.timeTest = Date.now();
   }
+
   async getLocation(): Promise<ILocation> {
-    const options = {enableHighAccuracy : true};
+    const options = {enableHighAccuracy: true};
     const data: any = await this.geolocation.getCurrentPosition(options).then((resp: Geoposition) => resp.coords).catch(() => false);
-    return (isBoolean(data)) ? null : {latitude: data.latitude , longitude: data.longitude, place: ''};
+    return (isBoolean(data)) ? null : {latitude: data.latitude, longitude: data.longitude, place: ''};
   }
 
   async getPlace(latitude: number, longitude: number): Promise<string> {
     const data: NativeGeocoderResult = await this.nativeGeocoder.reverseGeocode(latitude, longitude, this.options)
       .then((result: NativeGeocoderResult[]) => result[0])
       .catch(() => null);
-    const place =  `${data.countryName} ${data.administrativeArea} ${data.subAdministrativeArea} ${data.subLocality} ${data.thoroughfare}`;
+    const place = `${data.countryName} ${data.administrativeArea} ${data.subAdministrativeArea} ${data.subLocality} ${data.thoroughfare}`;
     return (isBoolean(data)) ? null : place;
   }
 
@@ -104,7 +105,7 @@ export class LocationService {
       this.locationCoords.longitude = resp.coords.longitude;
       this.locationCoords.accuracy = resp.coords.accuracy;
       this.locationCoords.timestamp = resp.timestamp;
-    }).catch( ( error) => {
+    }).catch((error) => {
       alert('Error getting location' + error);
     });
   }

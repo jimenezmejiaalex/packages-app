@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Storage} from '@ionic/storage';
 
 @Injectable({
@@ -7,7 +7,8 @@ import {Storage} from '@ionic/storage';
 export class StorageService {
 
   // Constructor
-  constructor(private storage: Storage) {}
+  constructor(private storage: Storage) {
+  }
 
   // Save any object locally it needs the id for storing
   async saveObjLocally(obj: any, id: string) {

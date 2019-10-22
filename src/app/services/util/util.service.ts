@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { loading } from '../../../environments/environment.prod';
+import {Injectable} from '@angular/core';
+import {loading} from '../../../environments/environment.prod';
 import {Network} from '@ionic-native/network/ngx';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,9 @@ export class UtilService {
   loading;
 
   // Constructor
-  constructor(private network: Network, private diagnostic: Diagnostic) { this.loading = loading; }
+  constructor(private network: Network, private diagnostic: Diagnostic) {
+    this.loading = loading;
+  }
 
   // Show a loading widget
   async loadingStart() {

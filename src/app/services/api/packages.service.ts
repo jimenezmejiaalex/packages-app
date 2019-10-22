@@ -30,7 +30,8 @@ export class PackagesService {
     private dialog: Dialogs,
     private location: LocationService,
     private util: UtilService
-    ) {}
+  ) {
+  }
 
   // Returns the length of the packages edited Array
   getPackagesEditedSize(): number {
@@ -55,7 +56,7 @@ export class PackagesService {
     await this.util.loadingStart();
     if (!this.util.networkConnection()) {
       await this.dialog.alert('No hay coneccion a internet, por favor revisar las conecciones.', 'Alerta');
-      await  this.util.loadingStop();
+      await this.util.loadingStop();
       return;
     } else {
       const data = await this.getPackagesFromServer();
@@ -243,14 +244,14 @@ export class PackagesService {
   async submitPackageEdited(packageDelivered: IPackageDelivered) {
     await this.util.loadingStart();
     if (await this.savePackageEdited(packageDelivered)) {
-       if ( await this.uploadToServer( this.packagesEdited.map(obj => this.mapObject(obj))) ) {
-         await this.removeDataFromId(this.pckgsEditedID);
-         this.packagesEdited = [];
-       }
-       await this.storage.saveObjLocally(this.packages, this.pckgsID);
-       const value = await this.afterSaving(true);
-       await this.util.loadingStop();
-       return value;
+      if (await this.uploadToServer(this.packagesEdited.map(obj => this.mapObject(obj)))) {
+        await this.removeDataFromId(this.pckgsEditedID);
+        this.packagesEdited = [];
+      }
+      await this.storage.saveObjLocally(this.packages, this.pckgsID);
+      const value = await this.afterSaving(true);
+      await this.util.loadingStop();
+      return value;
     }
   }
 
@@ -286,7 +287,7 @@ export class PackagesService {
   async postServer(bodies: Array<BodyPost>): Promise<boolean> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
+        'Content-Type': 'application/json',
       })
     };
     return await this.http.post(
@@ -294,8 +295,8 @@ export class PackagesService {
       JSON.stringify({edited: bodies, user: await this.getUser()}),
       httpOptions)
       .toPromise()
-      .then((response) =>  true)
-      .catch((err) => false );
+      .then(() => true)
+      .catch(() => false);
   }
 
   // Storage

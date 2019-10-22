@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {API_URL, environment, loading, POST_URL, SERVER_URL} from '../../../environments/environment.prod';
+import {API_URL, environment, POST_URL, SERVER_URL} from '../../../environments/environment.prod';
 import {ILocation} from '../../interfaces/ILocation';
 import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {LocationService} from '../location/location.service';
@@ -15,12 +15,13 @@ export class UserService {
   user: any;
 
   constructor(
-    private http: HttpClient ,
+    private http: HttpClient,
     private dialog: Dialogs,
     private location: LocationService,
     private util: UtilService,
     private storage: StorageService
-  ) {}
+  ) {
+  }
 
   async wifiEnabled(): Promise<boolean> {
     return this.util.getDiagnostic().isWifiEnabled();
@@ -34,13 +35,13 @@ export class UserService {
     }
   }
 
-  async logIn(user: string, pass: string): Promise <any> {
+  async logIn(user: string, pass: string): Promise<any> {
     if (!this.util.networkConnection()) {
       await this.dialog.alert('No hay conexión a Internet por favor revise sus conexiones e intente de nuevo');
       return false;
     } else {
       await this.util.loadingStart();
-      const loc: ILocation =  await this.location.getLocation();
+      const loc: ILocation = await this.location.getLocation();
       loc.place = await this.location.getPlace(loc.latitude, loc.longitude);
       this.user = {username: user, password: pass, location: loc, time: new Date().toString()};
       const body = JSON.stringify(this.user);

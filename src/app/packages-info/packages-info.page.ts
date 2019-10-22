@@ -3,13 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {IPackage} from '../interfaces/Package';
 import {PackagesService} from '../services/api/packages.service';
 import {IPackageDelivered} from '../interfaces/IPackageDelivered';
-import {
-  _estados,
-  _estadosToSend,
-  _receivers,
-  _receiversToSend,
-  loading,
-} from '../../environments/environment.prod';
+import {_estados, _estadosToSend, _receivers, _receiversToSend, loading,} from '../../environments/environment.prod';
 
 
 @Component({
@@ -56,11 +50,12 @@ export class PackagesInfoPage implements OnInit {
   estadosToSend = {};
   receivers = [];
   receiversToSend = {};
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dataService: PackagesService,
-    ) {
+  ) {
     this.estados = _estados;
     this.estadosToSend = _estadosToSend;
     this.receivers = _receivers;
@@ -75,7 +70,7 @@ export class PackagesInfoPage implements OnInit {
       if ((!this.isOther) && this.receiver.length > 0) {
         return false;
       } else {
-        if (this.other.length > 0 ) {
+        if (this.other.length > 0) {
           return false;
         }
       }
@@ -146,5 +141,6 @@ export class PackagesInfoPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }

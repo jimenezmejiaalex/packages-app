@@ -1,48 +1,48 @@
 <ion-header translucent>
 
-    <ion-toolbar>
-        <ion-title>{{titleText}}</ion-title>
-        <ion-buttons slot="end">
-            <ion-button color="danger" expand="block" *ngIf=" packages.length > 0 ">
-                <ion-icon name="cloud-upload"></ion-icon>
-                {{ pendingToUploadSize() }}
-            </ion-button>
-          <ion-button *ngIf="logged" (click)="logout()">
-            <ion-icon name="log-out"></ion-icon>
-            Salir
-          </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
-    <ion-toolbar>
-        <ion-searchbar placeholder="Buscar" (ionChange)="search($event)" animated></ion-searchbar>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-title>{{titleText}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf=" packages.length > 0 " color="danger" expand="block">
+        <ion-icon name="cloud-upload"></ion-icon>
+        {{ pendingToUploadSize() }}
+      </ion-button>
+      <ion-button (click)="logout()" *ngIf="logged">
+        <ion-icon name="log-out"></ion-icon>
+        Salir
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionChange)="search($event)" animated placeholder="Buscar"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-list>
-        <ion-item *ngFor="let pck of (packages | filtro:searchText)" (click)="gotoPackageInfo(pck)">
-            <ion-avatar slot="start">
-                <ion-icon name="cube"></ion-icon>
-            </ion-avatar>
-            <ion-label>
-                <h5><b>{{pck.id_paquete}}</b></h5>
-                <h3>{{pck.nombre_de_afiliado}}</h3>
-                <p><b>Estado: </b>{{pck.estado}}</p>
-            </ion-label>
-        </ion-item>
-    </ion-list>
+  <ion-list>
+    <ion-item (click)="gotoPackageInfo(pck)" *ngFor="let pck of (packages | filtro:searchText)">
+      <ion-avatar slot="start">
+        <ion-icon name="cube"></ion-icon>
+      </ion-avatar>
+      <ion-label>
+        <h5><b>{{pck.id_paquete}}</b></h5>
+        <h3>{{pck.nombre_de_afiliado}}</h3>
+        <p><b>Estado: </b>{{pck.estado}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
 <ion-footer>
-    <ion-toolbar>
-        <div *ngIf=" packages.length <= 0 ">
-            <ion-button (click)="gotoPackagesList()" expand="block" size="large" color="primary">
-                {{ startText }}
-            </ion-button>
-        </div>
-        <div *ngIf=" packages.length > 0 ">
-            <ion-button (click)="endMyDay()" expand="block" size="large" color="success">
-                {{ endText }}
-            </ion-button>
-        </div>
-    </ion-toolbar>
+  <ion-toolbar>
+    <div *ngIf=" packages.length <= 0 ">
+      <ion-button (click)="gotoPackagesList()" color="primary" expand="block" size="large">
+        {{ startText }}
+      </ion-button>
+    </div>
+    <div *ngIf=" packages.length > 0 ">
+      <ion-button (click)="endMyDay()" color="success" expand="block" size="large">
+        {{ endText }}
+      </ion-button>
+    </div>
+  </ion-toolbar>
 </ion-footer>

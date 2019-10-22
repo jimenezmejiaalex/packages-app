@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {path: 'packages', loadChildren: './packages/packages.module#PackagesPageModule'},
   {path: 'package-info', loadChildren: './packages-info/packages-info.module#PackagesInfoPageModule'},
-  { path: 'modal-login', loadChildren: './modal-login/modal-login.module#ModalLoginPageModule' }
+  {path: 'modal-login', loadChildren: './modal-login/modal-login.module#ModalLoginPageModule'}
 ];
 
 @NgModule({
