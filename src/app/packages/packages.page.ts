@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {PackagesService} from '../services/api/packages.service';
 import {IPackage} from '../interfaces/Package';
-import {LoadingController, ModalController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {NavigationExtras, Router} from '@angular/router';
 import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {UserService} from '../services/user/user.service';
 import {ModalLoginPage} from '../modal-login/modal-login.page';
-import {loading} from '../../environments/environment.prod';
+import {UtilService} from '../services/util/util.service';
 
 @Component({
   selector: 'app-packages',
@@ -23,11 +23,11 @@ export class PackagesPage implements OnInit {
   logged: boolean;
   constructor(
     private pckgS: PackagesService,
-    public loadingController: LoadingController,
     private router: Router,
-    public dialog: Dialogs,
+    private dialog: Dialogs,
     private userService: UserService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private util: UtilService
   ) {}
 
   pendingToUploadSize(): number {
@@ -35,11 +35,9 @@ export class PackagesPage implements OnInit {
   }
 
   async gotoPackageInfo(p: IPackage) {
-
     const pack = await this.pckgS.existEdited(p.id_paquete);
     let obj = {};
     if (!pack) {
-      // this.dialog.alert(JSON.stringify(pack));
       obj = {
         pckg: {
           package: p,
@@ -50,28 +48,22 @@ export class PackagesPage implements OnInit {
       };
     } else {
       obj = {pckg: pack};
-      // this.dialog.alert(JSON.stringify(p));
     }
-    const navigationExtras: NavigationExtras = {
-      state: obj,
-    };
+    const navigationExtras: NavigationExtras = { state: obj };
     await this.router.navigate(['package-info'], navigationExtras);
   }
 
   async checkData() {
     if (await this.pckgS.existData()) {
-      // await this.dialog.alert('exist data');
       await this.pckgS.continueMyday();
       this.getAPIPackages();
     }
   }
 
   async getAPIPackages() {
-    // tslint:disable-next-line:no-shadowed-variable
-    const loading = await this.loadingController.create();
-    await loading.present();
+    await this.util.loadingStart();
     this.packages = await this.pckgS.getPackages();
-    await loading.dismiss();
+    await this.util.loadingStop();
   }
 
   search(event) {
@@ -85,21 +77,17 @@ export class PackagesPage implements OnInit {
   }
 
   async gotoPackagesList() {
-    // tslint:disable-next-line:no-shadowed-variable
-    const loading = await this.loadingController.create();
-    await loading.present();
+    await this.util.loadingStart();
     await this.pckgS.dataStartDay();
     this.getAPIPackages();
-    await loading.dismiss();
+    await this.util.loadingStop();
   }
 
   async logIn(): Promise<boolean> {
     let data: any = await this.userService.getUser();
-    // await this.dialog.alert(data);
     if ( !data ) {
       data  = await this.presentModal();
       if (!data) {
-        // await this.dialog.alert('Back Button');
         return false;
       }
       await this.userService.saveUser(data.data);
@@ -122,30 +110,14 @@ export class PackagesPage implements OnInit {
   }
 
   async presentModal() {
-
     const modal = await this.modalController.create({ component: ModalLoginPage });
     await modal.present();
     const { data } = await modal.onWillDismiss();
     return data;
   }
 
-  // Show a loading widget
-  async loadingStart() {
-    const result = await loading.create();
-    await result.present();
-  }
-
-  // Stop the loading widget
-  async loadingStop() {
-    await loading.dismiss();
-  }
-
   async ngOnInit() {
-    // await this.loadingStart();
     while (!await this.logIn()) {}
     await this.checkData();
-    // await this.loadingStop();
   }
-
-
 }

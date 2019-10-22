@@ -3,8 +3,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {IPackage} from '../interfaces/Package';
 import {PackagesService} from '../services/api/packages.service';
 import {IPackageDelivered} from '../interfaces/IPackageDelivered';
-import {AlertController} from '@ionic/angular';
-import {loading} from '../../environments/environment.prod';
+import {
+  _estados,
+  _estadosToSend,
+  _receivers,
+  _receiversToSend,
+  loading,
+} from '../../environments/environment.prod';
 
 
 @Component({
@@ -29,41 +34,10 @@ export class PackagesInfoPage implements OnInit {
   other = '';
   description = '';
 
-  // Content for HTML
-  estados: Array<string> = [
-    'Entregado',
-    'Rechazado',
-    'Devolucion',
-    'Ausente'
-  ];
-
-  estadosToSend = {
-    entregado: 'Entregado',
-    rechazado: 'Rechazado',
-    devolucion: 'Devolucion',
-    ausente: 'Ausente'
-  };
-
-  receivers: Array<string> = [
-    'Titular',
-    'Padres',
-    'Hermanos',
-    'Seguridad',
-    'Otros',
-  ];
-
-  receiversToSend = {
-    titular: 'Titular',
-    padres: 'Padres',
-    hermanos: 'Hermanos',
-    seguridad: 'Seguridad',
-    otros: 'Otros',
-  };
-
   // Check if is submittable
   isSubmittable = true;
 
-
+  // Package
   package: IPackage = {
     id_paquete: '',
     peso: '',
@@ -77,11 +51,20 @@ export class PackagesInfoPage implements OnInit {
     detalles: '',
   };
 
+  // HTMl variables
+  estados = [];
+  estadosToSend = {};
+  receivers = [];
+  receiversToSend = {};
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dataService: PackagesService,
-    public alertController: AlertController) {
+    ) {
+    this.estados = _estados;
+    this.estadosToSend = _estadosToSend;
+    this.receivers = _receivers;
+    this.receiversToSend = _receiversToSend;
     this.callService();
   }
 
@@ -121,6 +104,7 @@ export class PackagesInfoPage implements OnInit {
     this.other = value;
     this.isSubmittable = this.changeIsSubmittableValue();
   }
+
   // Show a loading widget
   async loadingStart() {
     const result = await loading.create();
@@ -153,7 +137,7 @@ export class PackagesInfoPage implements OnInit {
   }
 
   callService() {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(() => {
       const obj = this.router.getCurrentNavigation().extras.state.pckg;
       this.package = (obj.package as IPackage);
       this.receiver = obj.receiver;
@@ -162,7 +146,5 @@ export class PackagesInfoPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

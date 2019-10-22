@@ -5,6 +5,7 @@ import {loading} from '../../environments/environment.prod';
 import {UserService} from '../services/user/user.service';
 import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {isBoolean} from 'util';
+import {LocationService} from '../services/location/location.service';
 
 @Component({
   selector: 'app-modal-login',
@@ -16,6 +17,7 @@ export class ModalLoginPage implements OnInit {
     navParams: NavParams,
     private modalCtrl: ModalController,
     private userService: UserService,
+    private location: LocationService,
     private dialog: Dialogs
   ) {
   }
@@ -62,6 +64,6 @@ export class ModalLoginPage implements OnInit {
 
   async ngOnInit() {
     await this.userService.networkEnabled();
-    await this.userService.checkGPSPermission();
+    await this.location.checkGPSPermission();
   }
 }
