@@ -1,16 +1,16 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {IPackageDelivered} from '../../interfaces/IPackageDelivered';
-import {Dialogs} from '@ionic-native/dialogs/ngx';
-import {IPackage} from '../../interfaces/Package';
-import {LoadingController} from '@ionic/angular';
-import {isBoolean} from 'util';
-import {BodyPost} from '../../interfaces/bodyPost';
-import {API_URL, environment, GET_URL, HTTPOPTIONS, POST_URL, SERVER_URL} from '../../../environments/environment.prod';
-import {StorageService} from '../storage/storage.service';
-import {LocationService} from '../location/location.service';
-import {UtilService} from '../util/util.service';
-import {IUser} from '../../interfaces/IUser';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { IPackageDelivered } from '../../interfaces/IPackageDelivered';
+import { Dialogs } from '@ionic-native/dialogs/ngx';
+import { IPackage } from '../../interfaces/Package';
+import { LoadingController } from '@ionic/angular';
+import { isBoolean } from 'util';
+import { BodyPost } from '../../interfaces/bodyPost';
+import { API_URL, environment, GET_URL, HTTPOPTIONS, POST_URL, SERVER_URL } from '../../../environments/environment.prod';
+import { StorageService } from '../storage/storage.service';
+import { LocationService } from '../location/location.service';
+import { UtilService } from '../util/util.service';
+import { IUser } from '../../interfaces/IUser';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +48,7 @@ export class PackagesService {
       .append('latitude', user.location.latitude.toString())
       .append('longitude', user.location.longitude.toString())
       .append('time', user.time);
-    return this.http.get(`${SERVER_URL}${API_URL}${GET_URL}`, HTTPOPTIONS).toPromise();
+    return await this.http.get(`${SERVER_URL}${API_URL}${GET_URL}`, HTTPOPTIONS).toPromise().then(data => data).catch(err => err);
   }
 
   // Stores all the packages locally
@@ -57,7 +57,6 @@ export class PackagesService {
     if (!this.util.networkConnection()) {
       await this.dialog.alert('No hay coneccion a internet, por favor revisar las conecciones.', 'Alerta');
       await this.util.loadingStop();
-      return;
     } else {
       const data = await this.getPackagesFromServer();
       if (data.nodes) {
@@ -112,7 +111,11 @@ export class PackagesService {
       status: obj.package.estado,
       receiver: obj.receiver,
       others: obj.specify,
-      description: obj.description
+      description: obj.description,
+      time: obj.time,
+      place: obj.location.place,
+      latitude: obj.location.latitude.toString(),
+      longitude: obj.location.longitude.toString(),
     };
   }
 
@@ -218,9 +221,9 @@ export class PackagesService {
     await this.util.loadingStart();
     const index: any = await this.findsPackageEdited(packageEdited);
     if (isBoolean(index)) {
-      // Packaged Edited Exists
       this.packagesEdited.push(packageEdited);
       await this.util.loadingStop();
+      // await this.dialog.alert(JSON.stringify(this.packagesEdited));
       if (await this.storage.saveObjLocally(this.packagesEdited, this.pckgsEditedID).then(e => true).catch(err => false)) {
         return await this.setPackageEditedStatusInPcksArray(packageEdited);
       }
@@ -244,15 +247,20 @@ export class PackagesService {
   async submitPackageEdited(packageDelivered: IPackageDelivered) {
     await this.util.loadingStart();
     if (await this.savePackageEdited(packageDelivered)) {
-      if (await this.uploadToServer(this.packagesEdited.map(obj => this.mapObject(obj)))) {
-        await this.removeDataFromId(this.pckgsEditedID);
-        this.packagesEdited = [];
+      if (this.util.networkConnection()) {
+        const place = await this.location.getPlace(packageDelivered.location.latitude, packageDelivered.location.longitude);
+        packageDelivered.location.place = (place === null) ? '' : place;
+        if (await this.uploadToServer(this.packagesEdited.map(obj => this.mapObject(obj)))) {
+          await this.removeDataFromId(this.pckgsEditedID);
+          this.packagesEdited = [];
+        }
       }
       await this.storage.saveObjLocally(this.packages, this.pckgsID);
       const value = await this.afterSaving(true);
       await this.util.loadingStop();
       return value;
     }
+    await this.util.loadingStop();
   }
 
   mapObject(obj) {
@@ -262,7 +270,11 @@ export class PackagesService {
       status: obj.package.estado,
       receiver: obj.receiver,
       others: obj.specify,
-      description: obj.description
+      description: obj.description,
+      time: obj.time,
+      place: obj.location.place,
+      latitude: obj.location.latitude.toString(),
+      longitude: obj.location.longitude.toString(),
     };
   }
 
@@ -292,7 +304,7 @@ export class PackagesService {
     };
     return await this.http.post(
       `${SERVER_URL}${API_URL}${POST_URL}`,
-      JSON.stringify({edited: bodies, user: await this.getUser()}),
+      JSON.stringify({ edited: bodies, user: await this.getUser() }),
       httpOptions)
       .toPromise()
       .then(() => true)

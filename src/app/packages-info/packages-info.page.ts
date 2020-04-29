@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {IPackage} from '../interfaces/Package';
-import {PackagesService} from '../services/api/packages.service';
-import {IPackageDelivered} from '../interfaces/IPackageDelivered';
-import {_estados, _estadosToSend, _receivers, _receiversToSend, loading,} from '../../environments/environment.prod';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IPackage } from '../interfaces/Package';
+import { PackagesService } from '../services/api/packages.service';
+import { IPackageDelivered } from '../interfaces/IPackageDelivered';
+import { _estados, _estadosToSend, _receivers, _receiversToSend, loading } from '../../environments/environment.prod';
+import { ILocation } from '../interfaces/ILocation';
+import { LocationService } from '../services/location/location.service';
 
 
 @Component({
@@ -55,6 +57,7 @@ export class PackagesInfoPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: PackagesService,
+    private location: LocationService,
   ) {
     this.estados = _estados;
     this.estadosToSend = _estadosToSend;
@@ -113,7 +116,7 @@ export class PackagesInfoPage implements OnInit {
 
   async submitInfo() {
     this.loadingStart();
-    this.setPackage();
+    await this.setPackage();
     const result = await this.dataService.submitPackageEdited(this.packageDelivered);
     if (result) {
       await this.router.navigate(['packages']);
@@ -121,13 +124,34 @@ export class PackagesInfoPage implements OnInit {
     this.loadingStop();
   }
 
-  setPackage() {
+  async setPackage() {
+    let loc: ILocation = null;
+    /*
+    not found => location
+    found => 1: * -> entregado(location)      2:  entregado -> other (found.location)
+    */
+    const found = this.dataService.packagesEdited.find(e => (e.package.id_paquete.includes(this.package.id_paquete)));
+    if (found) {
+      if (
+        this.estadosToSend[this.status] === _estadosToSend.entregado &&
+        !Object.keys(_estadosToSend)
+          .some(e => _estadosToSend[e] === _estadosToSend.entregado)
+      ) {
+        loc = found.location;
+      } else {
+        loc = await this.location.getLocation();
+      }
+    } else {
+      loc = await this.location.getLocation();
+    }
     this.package.estado = this.estadosToSend[this.status];
     this.packageDelivered = {
       package: this.package,
       receiver: (this.isDelivered) ? this.receiversToSend[this.receiver] : '',
       specify: (this.isOther) ? this.other : '',
-      description: this.description
+      description: this.description,
+      time: new Date().toString(),
+      location: loc,
     };
   }
 

@@ -81,7 +81,7 @@ export class PackagesPage implements OnInit {
   async gotoPackagesList() {
     await this.util.loadingStart();
     await this.pckgS.dataStartDay();
-    this.getAPIPackages();
+    await this.getAPIPackages();
     await this.util.loadingStop();
   }
 

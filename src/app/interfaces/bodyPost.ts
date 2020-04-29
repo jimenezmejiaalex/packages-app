@@ -4,4 +4,8 @@ export interface BodyPost {
   receiver: string;
   others: string;
   description: string;
+  time: string,
+  place: string,
+  latitude: string,
+  longitude: string,
 }
